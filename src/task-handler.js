@@ -2,9 +2,9 @@ function ItemList(name) {
     const itemArr = [];
     const listName = name;
 
-    const createItem = (title, desc, dueDate, priority) => {
+    const createItem = (obj) => {
         const id = new Date().getTime().toString().substring(4, 12);
-        const newItem = new Item(title, desc, dueDate, priority, id);
+        const newItem = new Item(obj.title, obj.description, obj.date, obj.priority, id);
         itemArr.push(newItem);
         return newItem;
     }

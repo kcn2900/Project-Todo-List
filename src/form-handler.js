@@ -1,45 +1,146 @@
-function createItemForm(hidden = false) {
-    const container = document.createElement('fieldset');
-    const form = document.createElement('form');
-    form.classList.add('form-item');
+function FormHandler() {
+    const ItemForm = createItemForm();
+    const ListForm = createListForm();
 
-    // easier to make hidden or not from the start (likely remove later)
-    if (hidden) { container.classList.add('form-shown'); }
-    else { container.classList.add('form-shown'); }
+    const showListForm = () => {
+        if (ListForm.classList.contains('form-hidden')) {
+            ListForm.classList.remove('form-hidden');
+            ListForm.classList.add('form-shown');
+        }
+    };
 
-    // create inputs based on 
-    // {element type, input type, input id + label name, label text}
-    form.append(...createInput('input', 'text', 'title', 'Title: '));
-    form.append(...createInput('textarea', 'text', 'description', 'Description: '));
-    form.append(...createInput('input', 'date', 'date', 'Date: '));
-    form.append(...createInput('input', 'number', 'priority', 'Priority: '));
+    const hideListForm = () => {
+        if (ListForm.classList.contains('form-shown')) {
+            ListForm.classList.remove('form-shown');
+            ListForm.classList.add('form-hidden');
+        }
+    };
 
-    // attach a form submit button
-    const submit = document.createElement('button');
-    submit.setAttribute('type', submit);
-    submit.textContent = "Submit";
-    form.append(submit);
+    const showItemForm = () => {
+        if (ItemForm.classList.contains('form-hidden')) {
+            ItemForm.classList.remove('form-hidden');
+            ItemForm.classList.add('form-shown');
+        }
+    };
 
-    container.appendChild(form);
-    return container;
-};
+    const hideItemForm = () => {
+        if (ItemForm.classList.contains('form-shown')) {
+            ItemForm.classList.remove('form-shown');
+            ItemForm.classList.add('form-hidden');
+        }
+    };
 
-function createListForm() {
+    const getItemFormData = () => {
+        const formData = {};
+        for (let child of ItemForm.children) {
+            if (child.nodeName !== "LABEL" && child.nodeName !== "BUTTON") {
+                formData[child.name] = child.value;
+            }
+        }
+        return formData;
+    }
 
-};
+    const clearItemFormData = () => {
+        for (let child of ItemForm.children) {
+            if (child.nodeName !== "LABEL" && child.nodeName !== "BUTTON") {
+                child.value = "";
+            }
+        }
+    };
 
-function createInput(element, type = "text", label, text) {
-    const input = document.createElement(element);
-    input.setAttribute('id', label);
-    input.setAttribute('type', type);
-    input.setAttribute('name', label);
-    input.setAttribute('required', '');
+    const getListFormData = () => {
+        const formData = {};
+        for (let child of ListForm.children) {
+            if (child.nodeName !== "LABEL" && 
+                child.nodeName !== "BUTTON") {
+                    formData[child.name] = child.value;
+                }
+        }
+        return formData;
+    };
 
-    const inputLabel = document.createElement('label');
-    inputLabel.setAttribute('for', label);
-    inputLabel.textContent = text;
+    const clearListFormData = () => {
+        for (let child of ListForm.children) {
+            if (child.nodeName !== "LABEL" && child.nodeName !== "BUTTON") {
+                child.value = "";
+            }
+        }
+    };
 
-    return [inputLabel, input] // use spread operator when appending
-};
+    function createItemForm() {
+        const form = document.createElement('form');
+        form.classList.add('form-item', 'form-hidden');
 
-export { createItemForm, createListForm };
+        // attach a close button
+        const closeBtn = document.createElement('button');
+        closeBtn.classList.add("form-close");
+        closeBtn.setAttribute('type', 'button');
+        closeBtn.textContent = "X";
+        form.append(closeBtn);
+
+        // create inputs based on 
+        // {element type, input type, input id + label name, label text}
+        form.append(...createInput('input', 'text', 'title', 'Title: '));
+        form.append(...createInput('textarea', 'text', 'description', 'Description: '));
+        form.append(...createInput('input', 'date', 'date', 'Date: '));
+        form.append(...createInput('input', 'number', 'priority', 'Priority: '));
+
+        // attach a form submit button
+        const submit = document.createElement('button');
+        submit.classList.add('form-submit');
+        submit.setAttribute('type', 'submit');
+        submit.textContent = "Submit";
+        form.append(submit);
+
+        return form;
+    };
+
+    function createListForm() {
+        const form = document.createElement('form');
+        form.classList.add('form-list', 'form-hidden');
+
+        // attach a close button
+        const closeBtn = document.createElement('button');
+        closeBtn.classList.add("form-close");
+        closeBtn.setAttribute('type', 'button');
+        closeBtn.textContent = "X";
+        form.append(closeBtn);
+
+        // create inputs based on 
+        // {element type, input type, input id + label name, label text}
+        form.append(...createInput('input', 'text', 'title', 'Task List Title: '));
+
+        // attach a form submit button
+        const submit = document.createElement('button');
+        submit.classList.add('form-submit');
+        submit.setAttribute('type', 'submit');
+        submit.textContent = "Submit";
+        form.append(submit);
+
+        return form;
+    };
+
+    function createInput(element, type = "text", label, text) {
+        const input = document.createElement(element);
+        input.setAttribute('id', label);
+        input.setAttribute('type', type);
+        input.setAttribute('name', label);
+        input.setAttribute('required', '');
+
+        const inputLabel = document.createElement('label');
+        inputLabel.setAttribute('for', label);
+        inputLabel.textContent = text;
+
+        return [inputLabel, input] // use spread operator when appending
+    };
+
+    return {
+        ItemForm, ListForm,
+        showItemForm, hideItemForm,
+        showListForm, hideListForm,
+        getItemFormData, getListFormData,
+        clearItemFormData, clearListFormData,
+    };
+}
+
+export { FormHandler };

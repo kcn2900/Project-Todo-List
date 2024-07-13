@@ -1,40 +1,72 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 #content {
-    display: flex;
+  display: flex;
 }
 
 /* -------------------------- sidebar css -------------------------------- */
 
 #sidebar {
-    width: 25%;
-    height: 100%;
+  width: 25%;
+  height: 100%;
 }
 
 .side-grid {
-    display: grid;
+  display: grid;
 }
 
 /* -------------------------- main css ----------------------------------- */
 
 .main-grid {
-    display: grid;
-    border: 1px black solid;
+  display: grid;
+  border: 1px black solid;
+}
+
+/* -------------------------- form css ----------------------------------- */
+
+form {
+  position: absolute;
+  top: 20;
+  right: 20;
+  background-color: beige;
+}
+
+.form-item {
+  height: 20vh;
+  width: 10vw;
+}
+
+.form-list {
+  height: 20vh;
+  width: 20vw;
+}
+
+.form-close {
+  font-size: xx-large;
+  font-weight: bold;
+}
+
+.form-shown {
+  display: block;
+}
+
+.form-hidden {
+  display: none;
 }
 
 /* -------------------------- task css ----------------------------------- */
 
 .task-card {
-    border: 1px black solid;
+  border: 1px black solid;
 }
 
 .task-remove {
-    background-color: red;
+  background-color: red;
 }
 
 textarea {
-    resize: none;
+  resize: none;
 }
