@@ -1,0 +1,40 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#content {
+    display: flex;
+}
+
+/* -------------------------- sidebar css -------------------------------- */
+
+#sidebar {
+    width: 25%;
+    height: 100%;
+}
+
+.side-grid {
+    display: grid;
+}
+
+/* -------------------------- main css ----------------------------------- */
+
+.main-grid {
+    display: grid;
+    border: 1px black solid;
+}
+
+/* -------------------------- task css ----------------------------------- */
+
+.task-card {
+    border: 1px black solid;
+}
+
+.task-remove {
+    background-color: red;
+}
+
+textarea {
+    resize: none;
+}
