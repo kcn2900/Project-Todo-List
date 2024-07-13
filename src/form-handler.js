@@ -4,14 +4,21 @@ function createItemForm(hidden = false) {
     form.classList.add('form-item');
 
     // easier to make hidden or not from the start (likely remove later)
-    if (hidden) { form.classList.add('form-shown'); }
-    else { form.classList.add('form-shown'); }
+    if (hidden) { container.classList.add('form-shown'); }
+    else { container.classList.add('form-shown'); }
 
-    // need title, desc, dueDate, priority
+    // create inputs based on 
+    // {element type, input type, input id + label name, label text}
     form.append(...createInput('input', 'text', 'title', 'Title: '));
     form.append(...createInput('textarea', 'text', 'description', 'Description: '));
     form.append(...createInput('input', 'date', 'date', 'Date: '));
     form.append(...createInput('input', 'number', 'priority', 'Priority: '));
+
+    // attach a form submit button
+    const submit = document.createElement('button');
+    submit.setAttribute('type', submit);
+    submit.textContent = "Submit";
+    form.append(submit);
 
     container.appendChild(form);
     return container;

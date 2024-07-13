@@ -7,10 +7,13 @@ import './style.css';
     const side = document.getElementById("sidebar");
     const mainContent = document.createElement("div");
     mainContent.className = "main-content";
+    main.append(mainContent);
+
+
+    const itemForm = FormHandler();
+    main.append(itemForm.ItemForm)
 
     const TaskShelfList = {};
-
-    main.append(mainContent);
     TaskShelfList['default'] = new TaskShelf("default");
     mainContent.append(TaskShelfList['default'].createDOMList());
 
@@ -20,9 +23,22 @@ import './style.css';
     let i = 0;
     main.append(testBtn);
     testBtn.addEventListener('click', () => {
-        TaskShelfList[`proj${i}`] = new TaskShelf(`proj${i}`)
-        mainContent.append(TaskShelfList[`proj${i}`].createDOMList());
-        i++
+        TaskShelfList[`proj${i}`] = new TaskShelf(`proj${i}`);
+
+        const tempList = TaskShelfList[`proj${i}`].createDOMList();
+        mainContent.append(tempList);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Remove List';
+        TaskShelfList[`proj${i}`].appendToTaskList(removeBtn);
+
+        removeBtn.addEventListener('click', () => {
+            tempList.remove();
+            delete TaskShelfList[`proj${i}`];
+            removeBtn.remove();
+        }, { once: true });
+
+        i++;
     });
 
     // main.append(createForm());
@@ -38,8 +54,26 @@ import './style.css';
     side.append(createSideBar());
 })();
 
+// just create once, and then reuse
 function FormHandler() {
-    
+    const ItemForm = createItemForm();
+    const ListForm = createListForm();
+
+    const showListForm = () => {
+        if (ListForm.classList.contains('form-hidden')) {
+            ListForm.classList.remove('form-hidden');
+            ListForm.classList.add('form-shown');
+        }
+    };
+
+    const hideListForm = () => {
+        if (ListForm.classList.contains('form-shown')) {
+            ListForm.classList.remove('form-shown');
+            ListForm.classList.add('form-hiden');
+        }
+    };
+
+    return { ItemForm, ListForm };
 }
 
 function TaskShelf(name) {
@@ -75,8 +109,8 @@ function TaskShelf(name) {
         taskList.printToConsole();
     }
 
+    // simply create DOM chain of Task List
     this.createDOMList = () => {
-        container.replaceChildren(); // refresh current tree
         container.classList.add('main-container');
 
         const grid = document.createElement('div');
@@ -84,20 +118,31 @@ function TaskShelf(name) {
 
         grid.classList.add('main-grid');
         container.append(grid);
-        grid.append(this.createCard(taskList));
 
         addBtn.textContent = "Add New Task";
         addBtn.id = "add-button"
         container.append(addBtn);
-
-        container.addEventListener('click', (e) => {
-            let target = e.target.id;
-
-            if (target === "add-button") {
-                grid.append(this.createCard(taskList));
-            }
-        });
+        container.addEventListener('click', createCardHelper);
 
         return container;
+    };
+
+    // for easier removal of container listener
+    const createCardHelper = (e) => {
+        const grid = container.querySelector('.main-grid');
+        let target = e.target.id;
+
+        if (target === "add-button") {
+            grid.append(this.createCard());
+        }
+    }
+
+    this.deleteDomList = () => {
+        container.replaceChildren();
+        container.removeEventListener('click', createCardHelper);
+    };
+
+    this.appendToTaskList = (element) => {
+        container.append(element);
     }
 }
