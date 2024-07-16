@@ -1,17 +1,26 @@
 * {
   margin: 0;
   padding: 0;
+  --task-width: 20vh;
 }
 
 #content {
+  position: relative;
   display: flex;
+  height: 100vh;
 }
 
 /* -------------------------- sidebar css -------------------------------- */
 
 #sidebar {
-  width: 25%;
+  padding: 1rem;
+  width: 20vw;
   height: 100%;
+  background-color: rgb(243, 243, 243);
+}
+
+.side-grid>button {
+  width: 2vw;
 }
 
 .side-grid {
@@ -19,6 +28,29 @@
 }
 
 /* -------------------------- main css ----------------------------------- */
+/* make task card overflow */
+/* new task shelf --> new col */
+#main {
+  position: relative;
+  margin-left: 2vw;
+  overflow: scroll;
+  width: 100%;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--task-width), 1fr));
+  grid-auto-flow: column;
+  gap: 2vh;
+  justify-items: start;
+  max-width: var(--task-width);
+  align-items: start;
+}
+
+.main-container {
+  margin: 2vh 0;
+  width: var(--task-width);
+}
 
 .main-grid {
   display: grid;
@@ -29,28 +61,70 @@
 
 form {
   position: absolute;
-  top: 20;
+  top: 0;
   right: 20;
   background-color: beige;
+  z-index: 1;
+  padding: 1vh 1vw;
+}
+
+.form-submit {
+  height: 5vh;
+  width: 5vw;
+  align-self: center;
+  justify-self: center;
 }
 
 .form-item {
-  height: 20vh;
-  width: 10vw;
+  height: 60vh;
+  width: 40vw;
+  gap: 2vh;
+  border-radius: 10px;
+}
+
+.form-item > input,
+.form-item > textarea {
+  border: 1px black solid;
+  border-radius: 10px;
+  padding: 1vh 1vw;
+  font-size: medium
+}
+
+.form-item>label[for='title'] {
+  margin-top: 5vh;
+}
+
+.form-item>textarea[name='description'] {
+  height: 5vh;
+}
+
+.form-item>input[name='date'] {
+  height: 2vh;
 }
 
 .form-list {
   height: 20vh;
   width: 20vw;
+  grid-template: repeat(auto-fill, minmax(7vh, 1fr)) 
+                / 1fr;
+}
+
+.form-list>label[for='title'] {
+  margin-top: 5vh;
+}
+
+.form-list>input[name='title'] {
+  height: 2vh;
 }
 
 .form-close {
-  font-size: xx-large;
+  font-size: large;
   font-weight: bold;
+  position: absolute;
 }
 
 .form-shown {
-  display: block;
+  display: grid;
 }
 
 .form-hidden {
@@ -60,7 +134,14 @@ form {
 /* -------------------------- task css ----------------------------------- */
 
 .task-card {
-  border: 1px black solid;
+  border-bottom: 1px solid black;
+  padding: 1vh 1vw;
+  background-color: aliceblue;
+}
+
+.task-label {
+  border-bottom: 1px solid black;
+  margin-bottom: 1vh;
 }
 
 .task-remove {
@@ -69,4 +150,13 @@ form {
 
 textarea {
   resize: none;
+}
+
+.task-detail > * {
+  list-style-type: none;
+}
+
+.task-detail > ul {
+  border: 1px black dotted;
+  padding: 1vh 1vw;
 }
