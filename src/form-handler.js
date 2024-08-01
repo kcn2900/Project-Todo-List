@@ -5,29 +5,29 @@ function FormHandler() {
     const showListForm = () => {
         if (ListForm.classList.contains('form-hidden')) {
             ListForm.classList.remove('form-hidden');
-            ListForm.classList.add('form-shown');
         }
+        ListForm.classList.add('form-shown');
     };
 
     const hideListForm = () => {
         if (ListForm.classList.contains('form-shown')) {
             ListForm.classList.remove('form-shown');
-            ListForm.classList.add('form-hidden');
         }
+        ListForm.classList.add('form-hidden');
     };
 
     const showItemForm = () => {
         if (ItemForm.classList.contains('form-hidden')) {
             ItemForm.classList.remove('form-hidden');
-            ItemForm.classList.add('form-shown');
         }
+        ItemForm.classList.add('form-shown');
     };
 
     const hideItemForm = () => {
         if (ItemForm.classList.contains('form-shown')) {
             ItemForm.classList.remove('form-shown');
-            ItemForm.classList.add('form-hidden');
         }
+        ItemForm.classList.add('form-hidden');
     };
 
     const getItemFormData = () => {
@@ -51,10 +51,10 @@ function FormHandler() {
     const getListFormData = () => {
         const formData = {};
         for (let child of ListForm.children) {
-            if (child.nodeName !== "LABEL" && 
+            if (child.nodeName !== "LABEL" &&
                 child.nodeName !== "BUTTON") {
-                    formData[child.name] = child.value;
-                }
+                formData[child.name] = child.value;
+            }
         }
         return formData;
     };
@@ -134,12 +134,40 @@ function FormHandler() {
         return [inputLabel, input] // use spread operator when appending
     };
 
+    const formListValidation = () => {
+        if (getListFormData()['title'] === '')
+            return false;
+        return true;
+    };
+
+    const formItemValidation = () => {
+        let flag = true;
+        for (let item of ItemForm) {
+
+            if (item.nodeName !== 'BUTTON') {
+                if (item.validity.valueMissing) {
+                    if (!item.classList.contains('form-error'))
+                        item.classList.add('form-error');
+                    item.setAttribute('placeholder', 'Please fill in this field');
+                    item.addEventListener('input', () => {
+                        item.setAttribute('placeholder', '');
+                        if (item.classList.contains('form-error'))
+                            item.classList.remove('form-error');
+                    }, { once: true })
+                    flag = false;
+                }
+            }
+        }
+        return flag;
+    };
+
     return {
         ItemForm, ListForm,
         showItemForm, hideItemForm,
         showListForm, hideListForm,
         getItemFormData, getListFormData,
         clearItemFormData, clearListFormData,
+        formItemValidation, formListValidation,
     };
 }
 

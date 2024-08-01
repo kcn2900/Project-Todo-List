@@ -2,17 +2,29 @@
   margin: 0;
   padding: 0;
   --task-width: 20vh;
+  --content-height: calc(100vh - 10vh);
 }
 
 #content {
   position: relative;
   display: flex;
-  height: 100vh;
+  height: var(--content-height);
+}
+
+header {
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  background-color: lightblue;
+  padding: 0 1vw;
+  font-size: xx-large;
+  font-weight: bold;
 }
 
 /* -------------------------- sidebar css -------------------------------- */
 
 #sidebar {
+
   padding: 1rem;
   width: 20vw;
   height: 100%;
@@ -24,7 +36,12 @@
 }
 
 .side-grid {
-  display: grid;
+  display: flex;
+  gap: 1vw;
+}
+
+.new-project-btn {
+  flex: 1;
 }
 
 /* -------------------------- main css ----------------------------------- */
@@ -54,7 +71,7 @@
 
 .main-grid {
   display: grid;
-  border: 1px black solid;
+  gap: 3vh;
 }
 
 /* -------------------------- form css ----------------------------------- */
@@ -63,9 +80,10 @@ form {
   position: absolute;
   top: 0;
   right: 20;
-  background-color: beige;
+  background-color: lightgray;
   z-index: 1;
   padding: 1vh 1vw;
+  margin-top: 10vh;
 }
 
 .form-submit {
@@ -117,6 +135,15 @@ form {
   height: 2vh;
 }
 
+.form-error {
+  border: 1px red solid;
+  background-color: pink;
+}
+
+form > *::placeholder {
+  color: darkred;
+}
+
 .form-close {
   font-size: large;
   font-weight: bold;
@@ -134,9 +161,13 @@ form {
 /* -------------------------- task css ----------------------------------- */
 
 .task-card {
-  border-bottom: 1px solid black;
+  border: 1px solid black;
+  border-radius: 10px;
   padding: 1vh 1vw;
   background-color: aliceblue;
+  display: grid;
+  grid-template: repeat(auto, minmax(100px, 1fr)) / 1fr 1fr;
+  gap: 1vh;
 }
 
 .task-label {
@@ -152,6 +183,12 @@ textarea {
   resize: none;
 }
 
+.task-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
 .task-detail > * {
   list-style-type: none;
 }
@@ -159,4 +196,10 @@ textarea {
 .task-detail > ul {
   border: 1px black dotted;
   padding: 1vh 1vw;
+}
+
+.task-detail > button {
+  flex: 1;
+  font-size: medium;
+  text-align: center;
 }

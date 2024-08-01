@@ -3,7 +3,9 @@ function ItemList(name) {
     const listName = name;
 
     const createItem = (obj) => {
-        const id = new Date().getTime().toString().substring(4, 12);
+
+        const id = obj.id ? 
+            obj.id : new Date().getTime().toString().substring(4, 12);
         const newItem = new Item(obj.title, obj.description, obj.date, obj.priority, id);
         itemArr.push(newItem);
         itemArr.sort((a, b) => {
