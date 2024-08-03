@@ -12,23 +12,30 @@ import './style.css';
     const sideGrid = document.createElement('div');
     sideGrid.className = "side-grid";
 
+    const taskPanel = document.createElement('div');
+    taskPanel.classList.add('side-task-panel');
+    const taskPanelLabel = document.createElement('p');
+    taskPanelLabel.textContent = "Projects";
+    taskPanel.append(taskPanelLabel)
+
     const mainContent = document.createElement("div");
     mainContent.className = "main-content";
     main.append(mainContent);
 
     const TaskShelfList = {};
-    TaskShelfList['default'] = new TaskShelf("default", form);
-
-    const taskShelfLabel = document.createElement('div');
-    taskShelfLabel.textContent = "Default";
-    taskShelfLabel.classList.add('task-label');
-    TaskShelfList['default'].appendToTaskList(taskShelfLabel);
-
-    mainContent.append(TaskShelfList['default'].createDOMList());
 
     if (localStorage.length > 0) {
-        for (let i = 0; i < localStorage.length; i++) {
-            const name = localStorage.key(i);
+        const newArr = Object.keys(localStorage)
+            .sort((a, b) => {
+                if (a === 'Default')
+                    return -1;
+                else if (b === 'Default')
+                    return 1;
+                return a - b;
+            });
+
+        for (let i = 0; i < newArr.length; i++) {
+            const name = newArr[i];
             TaskShelfList[name] = new TaskShelf(name, form);
 
             const taskShelfLabel = document.createElement('div');
@@ -40,13 +47,27 @@ import './style.css';
             mainContent.append(dom);
             addListRemoveBtn(name, dom);
 
-            console.log(localStorage.getItem(name));
-            TaskShelfList[name].reCreateList(JSON.parse(localStorage.getItem(name)))
+            appendToSideBar(name, dom);
 
+            if (localStorage.getItem(name) !== '') {
+                // console.log(localStorage.getItem(name));
+                TaskShelfList[name].reCreateList(JSON.parse(localStorage.getItem(name)))
+            }
         }
     }
     else {
+        TaskShelfList['Default'] = new TaskShelf("Default", form);
 
+        const taskShelfLabel = document.createElement('div');
+        taskShelfLabel.textContent = "Default";
+        taskShelfLabel.classList.add('task-label');
+        TaskShelfList['Default'].appendToTaskList(taskShelfLabel);
+
+        const dom = TaskShelfList['Default'].createDOMList();
+        mainContent.append(dom);
+        addListRemoveBtn('Default', dom);
+        appendToSideBar('Default', dom);
+        localStorage.setItem('Default', '');
     }
 
     /////////////////////////// sidebar handling ///////////////////////////////
@@ -90,9 +111,10 @@ import './style.css';
         delete TaskShelfList['temp'];
         mainContent.append(tempDOM);
 
-        console.log(tempDOM);
+        // console.log(tempDOM);
         addListRemoveBtn(tempName, tempDOM);
 
+        appendToSideBar(tempName, tempDOM);
         localStorage.setItem(tempName, '');
 
         form.ListForm.querySelector('.form-submit')
@@ -109,12 +131,50 @@ import './style.css';
             dom.remove();
             delete TaskShelfList[name];
             removeBtn.remove();
+            localStorage.removeItem(name);
+
+            // re-create project panel with removed project/shelf
+            const newList = [...taskPanel.children]
+                .filter(child => child.textContent !== name)
+
+            taskPanel.replaceChildren();
+            newList.forEach(item => {
+                // console.log(item.textContent, name, item.textContent === name);
+                taskPanel.append(item);
+            });
+
         }, { once: true });
     }
 
+    function appendToSideBar(text, dom) {
+        const btn = document.createElement('button');
+        btn.className = 'shelf-btn';
+        btn.textContent = text;
+        taskPanel.append(btn);
+
+        btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (dom.classList.contains('main-hidden')) {
+                dom.classList.remove('main-hidden');
+
+                if (btn.classList.contains('side-task-hidden')) {
+                    btn.classList.remove('side-task-hidden');
+                }
+            }
+            else {
+                dom.classList.add('main-hidden');
+                btn.classList.add('side-task-hidden');
+            }
+
+        })
+    }
+
+    // create outline of side bar
     sideGrid.append(createSideBar());
     side.append(sideGrid);
+    side.append(taskPanel);
 
+    // attach button to make new shelf
     const addListBtn = document.createElement('button');
     addListBtn.textContent = "NEW PROJECT";
     addListBtn.classList.add('new-project-btn');
@@ -174,12 +234,17 @@ function TaskShelf(name, f) {
         detailBtn.classList.add('task-detail-btn');
         detailBtn.textContent = 'More details';
         newItem.append(detailBtn);
-        const detailNode = generateDetails(Object.values(itemObj));
-        newItem.append(detailNode);
+
         detailBtn.addEventListener('click', () => {
             detailNode.style.display = "flex";
             detailBtn.style.display = "none";
         });
+
+        // append task details
+        console.log(Object.entries(itemObj));
+        const detailNode = generateDetails(Object.values(itemObj));
+        newItem.append(detailNode);
+
 
         //  attach remove button
         const removeBtn = document.createElement('button');
@@ -209,7 +274,7 @@ function TaskShelf(name, f) {
                 );
             }
         }
-        
+
         return newItem;
     }
 
@@ -298,8 +363,8 @@ function TaskShelf(name, f) {
     function sortTasks() {
         const grid = container.querySelector('.main-grid');
         [...grid.children]
-                .sort((a, b) => { return +a.id - +b.id })
-                .forEach((node) => grid.append(node));
+            .sort((a, b) => { return +a.id - +b.id })
+            .forEach((node) => grid.append(node));
     }
 
     // handle validation and task card DOM attachment + sorting
